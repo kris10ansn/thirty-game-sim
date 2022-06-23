@@ -1,40 +1,14 @@
+mod strategies;
+mod strategy;
+
 use rand::Rng;
+use strategies::only_sixes::OnlySixesStrategy;
+use strategies::random::RandomStrategy;
+use strategy::Strategy;
 
 fn roll_die() -> u8 {
     let mut rng = rand::thread_rng();
     return rng.gen_range(1..=6);
-}
-
-trait Strategy {
-    fn pick_dice(&self, dice: &Vec<u8>) -> Vec<u8>;
-}
-
-struct RandomStrategy {}
-impl Strategy for RandomStrategy {
-    fn pick_dice(&self, dice: &Vec<u8>) -> Vec<u8> {
-        let mut rng = rand::thread_rng();
-        return vec![dice[rng.gen_range(0..dice.len())]];
-    }
-}
-
-struct OnlySixesStrategy {}
-impl Strategy for OnlySixesStrategy {
-    fn pick_dice(&self, dice: &Vec<u8>) -> Vec<u8> {
-        let mut picks: Vec<u8> = Vec::new();
-
-        dice.iter().for_each(|dice_value| {
-            if *dice_value == 6 {
-                picks.push(6)
-            }
-        });
-
-        if picks.len() == 0 {
-            let max = dice.iter().max().unwrap();
-            picks.push(*max);
-        }
-
-        picks
-    }
 }
 
 fn play_game(strategy: &dyn Strategy) -> u8 {
